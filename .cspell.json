@@ -1,0 +1,18 @@
+{
+    "words": [
+        "isort",
+        "pycache",
+        "pyproject",
+        "pytest",
+        "venv"
+    ],
+    "ignorePaths": [
+        "**/__pycache__/**",
+        "**/.git/**",
+        "**/.gitignore",
+        "**/.python-version",
+        "**/.venv/**",
+        "**/node_modules/**",
+        "**/uv.lock"
+    ]
+}

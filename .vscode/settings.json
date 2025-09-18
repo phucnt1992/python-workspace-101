@@ -1,0 +1,38 @@
+{
+  // Use Black as the default formatter for Python files and organize imports on save
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "always"
+    },
+  },
+  // Configure isort to use the Black profile for import sorting
+  "isort.args": [
+    "--profile",
+    "black"
+  ],
+  // Expand the error lens to show all levels of diagnostics
+  "errorLens.enabledDiagnosticLevels": [
+    "error",
+    "warning",
+    "info",
+    "hint"
+  ],
+  // Enable Pytest as default testing framework
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  // Check for type issues in Python code, standard level is a good balance
+  "python.analysis.typeCheckingMode": "standard",
+  // Exclude certain directories from analysis to improve performance
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/__pycache__": true,
+    "**/.venv": true,
+    "**/node_modules": true,
+  }
+}

@@ -1,0 +1,20 @@
+# For more information about the pyproject.toml file, see:
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#build-dependencies
+
+[project]
+name = "python-workspace-101"
+version = "1.0.0"
+description = "A simple Python project to demonstrate workspace setup."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+dev-dependencies = [
+    "black",
+    "flake8",
+    "isort",
+    "pytest",
+    "pytest-cov",
+    "pre-commit",
+]

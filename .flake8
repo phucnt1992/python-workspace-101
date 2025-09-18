@@ -1,0 +1,8 @@
+[flake8]
+exclude =
+    .git,
+    .venv
+    __pycache__
+    node_modules
+; Increase max-line-length to support modern screen resolutions
+max-line-length = 160
