@@ -1,9 +1,9 @@
-# Python workspace 101 for starters
+# 🐍 Python workspace 101 for starters
 
 This repository is a simple Python workspace setup for beginners.
 It includes a basic project structure, a virtual environment, and instructions to get started with Python development.
 
-## What's included
+## ✅ What's included
 
 - **uv**: A tool to manage Python versions and virtual environments.
 - **node.js lts**: For running linting tools like markdownlint-cli2.
@@ -13,7 +13,7 @@ It includes a basic project structure, a virtual environment, and instructions t
 - **flake8**: A tool for style guide enforcement.
 - **pytest**: A testing framework for Python.
 
-## Getting Started
+## 💻 Getting Started
 
 - Install Node.js LTS version the [instructions](https://nodejs.org/en/download)
 
@@ -59,7 +59,7 @@ It includes a basic project structure, a virtual environment, and instructions t
   uv run pre-commit run --all-files
   ```
 
-## Contributing
+## 👋 Contributing
 
 Feel free to fork this repository and make improvements. Pull requests are welcome!
 
