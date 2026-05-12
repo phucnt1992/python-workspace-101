@@ -1,0 +1,10 @@
+services:
+  # docker run --rm -it -p 18888:18888 -p 4317:18889 -p 4318:18890 -d --name aspire-dashboard `
+  aspire:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: aspire-dashboard
+    ports:
+      - "18888:18888"
+      - "4317:18889" # GRPC port for telemetry
+      - "4318:18890" # HTTP port for telemetry
+    restart: unless-stopped

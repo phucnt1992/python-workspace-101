@@ -1,0 +1,24 @@
+{
+  "lspServers": {
+    "ty": {
+      "command": "uvx",
+      "args": [
+        "ty",
+        "server"
+      ],
+      "fileExtensions": {
+        ".py": "python"
+      }
+    },
+    "ruff": {
+      "command": "uvx",
+      "args": [
+        "ruff",
+        "server"
+      ],
+      "fileExtensions": {
+        ".py": "python"
+      }
+    }
+  }
+}

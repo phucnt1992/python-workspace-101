@@ -11,5 +11,7 @@
     "usernamehw.errorlens",
     "visualstudioexptteam.intellicode-api-usage-examples",
     "visualstudioexptteam.vscodeintellicode",
+    "charliermarsh.ruff",
+    "astral-sh.ty",
   ]
 }

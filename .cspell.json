@@ -1,9 +1,16 @@
 {
     "words": [
+        "direnv",
+        "fastapi",
+        "healthz",
+        "ipynb",
         "isort",
         "pycache",
+        "pydantic",
+        "pypackages",
         "pyproject",
         "pytest",
+        "sqlmodel",
         "venv"
     ],
     "ignorePaths": [
