@@ -10,7 +10,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-json
-        exclude: ^.\w+\/.*\.json$
+        exclude: ^\.[^/]+/.*\.json$
       - id: check-toml
       - id: check-added-large-files
       ## Uncomment the following to prevent commits directly to main branch
