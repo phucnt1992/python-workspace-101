@@ -22,3 +22,12 @@ repos:
     rev: v0.22.1
     hooks:
       - id: markdownlint-cli2
+  ## Uncomment the following to run ci checks on pre-commit
+  # - repo: local
+  #   hooks:
+  #     - id: task-ci
+  #       name: Taskfile Local Hook
+  #       entry: task ci # Change 'ci' to your specific task name
+  #       language: system
+  #       files: \.py$ # Optional: restrict to specific file types (e.g., .go, .py)
+  #       pass_filenames: false # Task usually runs on the whole repo, not just staged files
