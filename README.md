@@ -58,8 +58,6 @@ It includes a basic project structure, a virtual environment, and instructions t
 
 ## Appendix
 
-1.
-
 ## 👋 Contributing
 
 Feel free to fork this repository and make improvements. Pull requests are welcome!
