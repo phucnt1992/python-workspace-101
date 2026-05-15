@@ -4,7 +4,6 @@ requires-python = ">=3.13"
 
 [manifest]
 members = [
-    "app",
     "cli",
     "domain",
     "infra",
@@ -54,24 +53,9 @@ wheels = [
 
 [[package]]
 name = "app"
-version = "1.0.0"
-source = { editable = "src/app" }
-dependencies = [
-    { name = "fastapi" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "sqlalchemy" },
-    { name = "sqlmodel" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "sqlalchemy" },
-    { name = "sqlmodel" },
-]
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/76/11/f386fe5dedd254167f16cca77427eeb6ac0918e344ae881bcdec8057b3d5/app-0.0.1.zip", hash = "sha256:214549e746d777292d807eec7713c2cea332e08e037c923cd61ee1d5ab7a127f", size = 2160, upload-time = "2016-07-27T07:30:28.762Z" }
 
 [[package]]
 name = "cfgv"
@@ -87,11 +71,19 @@ name = "cli"
 version = "1.0.0"
 source = { editable = "src/cli" }
 dependencies = [
+    { name = "domain" },
+    { name = "infra" },
     { name = "typer" },
+    { name = "use-cases" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "typer" }]
+requires-dist = [
+    { name = "domain", editable = "packages/domain" },
+    { name = "infra", editable = "packages/infra" },
+    { name = "typer" },
+    { name = "use-cases", editable = "packages/use_cases" },
+]
 
 [[package]]
 name = "click"
@@ -512,7 +504,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "app", editable = "src/app" },
+    { name = "app" },
     { name = "cli", editable = "src/cli" },
     { name = "domain", editable = "packages/domain" },
     { name = "infra", editable = "packages/infra" },

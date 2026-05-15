@@ -37,9 +37,7 @@ async def lifespan(app: FastAPI):
     global _engine
     db_url = get_settings().db_url
     if not db_url:
-        raise ValueError(
-            "APP_DB_URL environment variable is required but not configured."
-        )
+        raise ValueError("APP_DB_URL environment variable is required but not configured.")
     _engine = create_async_engine(db_url)
     yield
     if _engine:

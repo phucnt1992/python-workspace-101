@@ -58,3 +58,8 @@ tasks:
       - loginLine=$(docker container logs aspire-dashboard | grep "login?t=")
       - match=$(echo "$loginLine" | sed -n 's/.*login?t=\([^[:space:]]*\).*/\1/p')
       - echo -n "$match"
+
+  cli:
+    desc: "Run the CLI application."
+    cmds:
+      - uv python src/cli/src/cli/main.py {{.CLI_ARGS}}

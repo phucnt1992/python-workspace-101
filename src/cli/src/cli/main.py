@@ -11,9 +11,14 @@ from use_cases.todo import (
     update_todo,
 )
 
+from cli.exp import app as exp_app
+
 app = typer.Typer(help="Todo management CLI")
 todo_app = typer.Typer(help="Create and manage todo items")
+
+
 app.add_typer(todo_app, name="todo")
+app.add_typer(exp_app, name="demo")
 
 
 def _format_todo(todo: Todo) -> str:

@@ -3,4 +3,4 @@ name = "cli"
 version = "1.0.0"
 description = "Command-line interface"
 requires-python = ">=3.13"
-dependencies = ["typer"]
+dependencies = ["typer", "domain", "infra", "use_cases"]
