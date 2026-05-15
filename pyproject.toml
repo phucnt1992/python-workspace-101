@@ -1,20 +1,52 @@
-# For more information about the pyproject.toml file, see:
-# https://docs.astral.sh/uv/concepts/projects/dependencies/#build-dependencies
-
+# UV Workspace Configuration
+# https://docs.astral.sh/uv/concepts/projects/
 [project]
 name = "python-workspace-101"
 version = "1.0.0"
 description = "A simple Python project to demonstrate workspace setup."
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.13"
 
-[tool.uv]
-dev-dependencies = [
-    "black",
-    "flake8",
-    "isort",
-    "pytest",
-    "pytest-cov",
-    "pre-commit",
+dependencies = ["domain", "infra", "use_cases", "cli", "app"]
+
+[dependency-groups]
+dev = [
+    { include-group = "lint" },
+    { include-group = "test" },
+    { include-group = "ci" },
 ]
+lint = ["ruff"]
+test = ["pytest", "pytest-cov"]
+ci = ["pre-commit"]
+
+[tool.uv.sources]
+# Define the workspace members (subprojects)
+domain = { workspace = true }
+infra = { workspace = true }
+use_cases = { workspace = true }
+
+# Define the source directories for each member
+# app = { workspace = true }
+cli = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "src/cli",
+    # "src/app",
+    "packages/*",
+]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".env",
+    ".vscode",
+    "__pycache__",
+    ".ruff_cache",
+    ".devcontainer",
+    "node_modules",
+]
+target-version = "py313"
+line-length = 120
+indent-width = 4

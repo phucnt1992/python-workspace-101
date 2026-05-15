@@ -1,0 +1,9 @@
+[project]
+name = "infra"
+version = "1.0.0"
+description = "Infrastructure layer for the application"
+dependencies = ["sqlmodel", "pydantic", "pydantic_settings", "fastapi", "aiosqlite"]
+
+[build-system]
+requires = ["uv_build>=0.11.14,<0.12"]
+build-backend = "uv_build"

@@ -1,7 +1,7 @@
 {
   // Use Black as the default formatter for Python files and organize imports on save
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": "always"
@@ -26,13 +26,15 @@
   "python.analysis.typeCheckingMode": "standard",
   // Exclude certain directories from analysis to improve performance
   "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/.DS_Store": true,
-    "**/Thumbs.db": true,
     "**/__pycache__": true,
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.ruff_cache": true,
+    "**/.svn": true,
     "**/.venv": true,
     "**/node_modules": true,
+    "**/Thumbs.db": true,
+    "**/*.egg-info": true
   }
 }

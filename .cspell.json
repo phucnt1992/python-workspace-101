@@ -1,9 +1,23 @@
 {
     "words": [
+        "autouse",
+        "charliermarsh",
+        "debugpy",
+        "direnv",
+        "fastapi",
+        "hbenl",
+        "healthz",
+        "ipynb",
         "isort",
         "pycache",
+        "pydantic",
+        "pypackages",
         "pyproject",
         "pytest",
+        "sonarlint",
+        "sqlmodel",
+        "tamasfe",
+        "Taskfile",
         "venv"
     ],
     "ignorePaths": [
