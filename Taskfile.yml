@@ -1,26 +1,52 @@
 version: 3
 
 tasks:
+  default:
+    desc: "Default task to run when no task is specified."
+    cmd: task --list
+
   init:
     desc: "Initialize the project by installing dependencies."
     cmds:
-      - uv venv --python 3.13
-      - uv sync
+      - uv venv --python 3.13 --clear
+      - uv sync --compile-bytecode
+      - uv run pre-commit install
 
   lint:
     desc: "Run linters to check code quality."
     cmds:
       - uv run ruff check
 
+  fmt:
+    desc: "Format code using uv."
+    cmds:
+      - uv run ruff format {{.CLI_ARGS}}
+
   test:
+    desc: "Run tests."
+    cmds:
+      - uv run pytest --cov=src tests/
+
+  test-cov:
     desc: "Run tests and generate coverage report."
     cmds:
       - uv run pytest --cov=src tests/
 
+  ci:
+    desc: "Run CI checks (lint and tests)."
+    cmds:
+      - task: lint
+      - task: test
+
+  sync:
+    desc: "Sync the virtual environment with the lock file."
+    cmds:
+      - uv sync --compile-bytecode
+
   pre-commit:
     desc: "Run pre-commit hooks to check code before committing."
     cmds:
-      - pre-commit run --all-files
+      - uv run pre-commit run --all-files
 
   dashboard-token:
     desc: "Generate a token for the Aspire dashboard."

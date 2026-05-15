@@ -5,13 +5,9 @@ It includes a basic project structure, a virtual environment, and instructions t
 
 ## ✅ What's included
 
-- **uv**: A tool to manage Python versions and virtual environments.
+- **Taskfile**: A task runner to standardize local developer commands.
+- **uv**: Used under the hood by Taskfile tasks for Python environment and dependency management.
 - **node.js lts**: For running linting tools like markdownlint-cli2.
-- **pre-commit**: A framework for managing and maintaining multi-language pre-commit hooks.
-- **black**: A code formatter for Python.
-- **isort**: A Python utility for sorting imports.
-- **flake8**: A tool for style guide enforcement.
-- **pytest**: A testing framework for Python.
 
 ## 💻 Getting Started
 
@@ -19,45 +15,50 @@ It includes a basic project structure, a virtual environment, and instructions t
 
 - Install uv tool by following the [instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
-- Install Python 3.12 or higher by following command:
+- Install Taskfile by following the [instructions](https://taskfile.dev/#/installation).
+
+- Initialize the workspace (create venv + sync dependencies):
 
   ```bash
-  uv python install --default 3.12
+  task init
   ```
 
-- Verify the installation by checking the Python version:
+- Re-sync dependencies when needed:
 
   ```bash
-  python --version
-
-  # Output should be: Python 3.12.x
+  task sync
   ```
 
-- Sync the dependencies:
+- Run lint checks:
 
   ```bash
-  uv sync
+  task lint
   ```
 
-- Run the application:
+- Run tests:
 
   ```bash
-  uv run main.py
-
-  # Output should be: Hello, World!
+  task test
   ```
 
-- Install pre-commit to setup git hooks:
+- Run pre-commit checks manually:
 
   ```bash
-  uv run pre-commit install
+  task pre-commit
   ```
 
-- Run pre-commit checks manually after committing changes:
+## 🔄 Pull Request CI
 
-  ```bash
-  uv run pre-commit run --all-files
-  ```
+- Pull requests targeting `main` run GitHub Actions workflow `CI`.
+- The workflow executes `task ci`, which runs:
+  - `task lint`
+  - `task test`
+- Coverage is reported as part of test output and is not used as a required threshold gate.
+- Recommended required status check for branch protection: `CI / ci`.
+
+## Appendix
+
+1.
 
 ## 👋 Contributing
 

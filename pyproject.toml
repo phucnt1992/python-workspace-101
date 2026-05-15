@@ -1,12 +1,13 @@
-# For more information about the pyproject.toml file, see:
-# https://docs.astral.sh/uv/concepts/projects/dependencies/#build-dependencies
+# UV Workspace Configuration
+# https://docs.astral.sh/uv/concepts/projects/
 [project]
 name = "python-workspace-101"
 version = "1.0.0"
 description = "A simple Python project to demonstrate workspace setup."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["fastapi", "sqlmodel", "pydantic"]
+
+dependencies = ["domain", "infra", "use_cases", "cli", "app"]
 
 [dependency-groups]
 dev = [
@@ -17,6 +18,19 @@ dev = [
 lint = ["ruff"]
 test = ["pytest", "pytest-cov"]
 ci = ["pre-commit"]
+
+[tool.uv.sources]
+# Define the workspace members (subprojects)
+domain = { workspace = true }
+infra = { workspace = true }
+use_cases = { workspace = true }
+
+# Define the source directories for each member
+app = { workspace = true }
+cli = { workspace = true }
+
+[tool.uv.workspace]
+members = ["src/cli", "src/app", "packages/*"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
