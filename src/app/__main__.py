@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from functools import lru_cache
 from typing import AsyncGenerator, Optional, Union
 
@@ -5,7 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy.sql import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -27,16 +28,33 @@ def get_settings() -> Settings:
     return Settings()
 
 
-#  Create DB Setting
-DATABASE_URL = get_settings().db_url
+# Engine is initialized during application startup
+_engine: Optional[AsyncEngine] = None
 
-assert DATABASE_URL, "DATABASE_URL is empty, it must be configured."
 
-engine = create_async_engine(DATABASE_URL)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global _engine
+    db_url = get_settings().db_url
+    if not db_url:
+        raise ValueError(
+            "APP_DB_URL environment variable is required but not configured."
+        )
+    _engine = create_async_engine(db_url)
+    yield
+    if _engine:
+        await _engine.dispose()
+        _engine = None
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with AsyncSession(engine) as session:
+    if _engine is None:
+        raise RuntimeError(
+            "Database engine is not initialized. "
+            "This should not happen during normal request handling. "
+            "Please check application startup logs."
+        )
+    async with AsyncSession(_engine) as session:
         try:
             yield session
         finally:
@@ -66,7 +84,7 @@ def get_health_check_service(
     return HealthCheckService(db)
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/api/_healthz/liveness", tags=["healthz"], response_model=HealthCheckStatus)
@@ -81,9 +99,9 @@ def get_liveness_status():
 async def get_readiness_status(
     service: HealthCheckService = Depends(get_health_check_service),
 ):
-    result = await service.is_database_connected()
+    is_connected = await service.is_database_connected()
 
-    if result.first() == (1,):
+    if is_connected:
         return {"status": "ok"}
 
     raise HTTPException(status_code=503, detail={"status": "error"})
