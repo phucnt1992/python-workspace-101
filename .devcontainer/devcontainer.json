@@ -6,14 +6,31 @@
   "image": "mcr.microsoft.com/devcontainers/base:noble",
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {},
-    "ghcr.io/devcontainers/features/copilot-cli:1": {}
+    "ghcr.io/devcontainers/features/git": {
+      "version": "latest",
+      "ppa": true
+    },
+    "ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv": {
+      "shellautocompletion": true,
+      "version": "latest"
+    },
+    "ghcr.io/audacioustux/devcontainers/taskfile": {},
+    "ghcr.io/devcontainers/features/copilot-cli": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/java": {
+      "version": "latest",
+      "jdkDistro": "ms"
+    },
+    "ghcr.io/devcontainers/features/node": {
+      "version": "lts",
+      "pnpmVersion": "latest"
+    }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
   // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "uname -a",
+  "postCreateCommand": "task init",
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {

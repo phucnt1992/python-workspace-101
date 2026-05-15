@@ -1,5 +1,8 @@
 version: 3
 
+vars:
+  PYTHON_VERSION: "3.13"
+
 tasks:
   default:
     desc: "Default task to run when no task is specified."
@@ -8,7 +11,8 @@ tasks:
   init:
     desc: "Initialize the project by installing dependencies."
     cmds:
-      - uv venv --python 3.13 --clear
+      - uv python install {{.PYTHON_VERSION}} --compile-bytecode
+      - uv venv --python {{.PYTHON_VERSION}} --clear
       - uv sync --compile-bytecode
       - uv run pre-commit install
 
