@@ -2,13 +2,23 @@ from contextlib import asynccontextmanager
 from functools import lru_cache
 from typing import AsyncGenerator, Optional, Union
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy.sql import text
+from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from domain.todo import Todo
+from use_cases.todo import (
+    create_todo as create_todo_use_case,
+    delete_todo as delete_todo_use_case,
+    get_todo_list as get_todo_list_use_case,
+    set_todo_completed as set_todo_completed_use_case,
+    update_todo as update_todo_use_case,
+)
 
 
 class Settings(BaseSettings):
@@ -39,6 +49,8 @@ async def lifespan(app: FastAPI):
     if not db_url:
         raise ValueError("APP_DB_URL environment variable is required but not configured.")
     _engine = create_async_engine(db_url)
+    async with _engine.begin() as connection:
+        await connection.run_sync(SQLModel.metadata.create_all)
     yield
     if _engine:
         await _engine.dispose()
@@ -62,6 +74,16 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 # Implement in /app/services/health_check_service.py
 class HealthCheckStatus(BaseModel):
     status: str
+
+
+class CreateTodoRequest(BaseModel):
+    title: str
+    description: str | None = None
+
+
+class UpdateTodoRequest(BaseModel):
+    title: str | None = None
+    description: str | None = None
 
 
 class HealthCheckService:
@@ -103,3 +125,46 @@ async def get_readiness_status(
         return {"status": "ok"}
 
     raise HTTPException(status_code=503, detail={"status": "error"})
+
+
+@app.get("/api/todos", tags=["todos"], response_model=list[Todo])
+async def list_todos(db: AsyncSession = Depends(get_db_session)) -> list[Todo]:
+    todos = await get_todo_list_use_case(db)
+    return list(todos)
+
+
+@app.post("/api/todos", tags=["todos"], response_model=Todo, status_code=status.HTTP_201_CREATED)
+async def create_todo(request: CreateTodoRequest, db: AsyncSession = Depends(get_db_session)) -> Todo:
+    return await create_todo_use_case(db, title=request.title, description=request.description)
+
+
+@app.put("/api/todos/{todo_id}", tags=["todos"], response_model=Todo)
+async def update_todo(todo_id: int, request: UpdateTodoRequest, db: AsyncSession = Depends(get_db_session)) -> Todo:
+    todo = await update_todo_use_case(db, todo_id=todo_id, title=request.title, description=request.description)
+    if todo is None:
+        raise HTTPException(status_code=404, detail=f"Todo with id={todo_id} was not found.")
+    return todo
+
+
+@app.delete("/api/todos/{todo_id}", tags=["todos"], status_code=status.HTTP_204_NO_CONTENT)
+async def delete_todo(todo_id: int, db: AsyncSession = Depends(get_db_session)) -> Response:
+    deleted = await delete_todo_use_case(db, todo_id=todo_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Todo with id={todo_id} was not found.")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.post("/api/todos/{todo_id}/complete", tags=["todos"], response_model=Todo)
+async def complete_todo(todo_id: int, db: AsyncSession = Depends(get_db_session)) -> Todo:
+    todo = await set_todo_completed_use_case(db, todo_id=todo_id, completed=True)
+    if todo is None:
+        raise HTTPException(status_code=404, detail=f"Todo with id={todo_id} was not found.")
+    return todo
+
+
+@app.post("/api/todos/{todo_id}/reopen", tags=["todos"], response_model=Todo)
+async def reopen_todo(todo_id: int, db: AsyncSession = Depends(get_db_session)) -> Todo:
+    todo = await set_todo_completed_use_case(db, todo_id=todo_id, completed=False)
+    if todo is None:
+        raise HTTPException(status_code=404, detail=f"Todo with id={todo_id} was not found.")
+    return todo
