@@ -26,13 +26,13 @@ infra = { workspace = true }
 use_cases = { workspace = true }
 
 # Define the source directories for each member
-# app = { workspace = true }
+app = { workspace = true }
 cli = { workspace = true }
 
 [tool.uv.workspace]
 members = [
     "src/cli",
-    # "src/app",
+    "src/app",
     "packages/*",
 ]
 
