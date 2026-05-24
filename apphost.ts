@@ -6,6 +6,8 @@ import { createBuilder } from './.modules/aspire.js';
 const builder = await createBuilder();
 
 const db = await builder.addPostgres("db")
+    .withContainerName("tododb-postgres")
+    .withDataVolume({ name: "tododb-postgres-data" })
     .addDatabase("postgres");
 
 const api = await builder.addUvicornApp("api", "./src/api", "api.main:app")
