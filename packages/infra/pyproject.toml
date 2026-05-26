@@ -2,7 +2,19 @@
 name = "infra"
 version = "1.0.0"
 description = "Infrastructure layer for the application"
-dependencies = ["sqlmodel", "pydantic", "pydantic_settings", "fastapi", "aiosqlite"]
+dependencies = [
+    "sqlmodel",
+    "pydantic",
+    "pydantic_settings",
+    "fastapi",
+    "asyncpg",
+    "aiosqlite",
+    "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp-proto-grpc",
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-instrumentation-logging",
+    "python-json-logger",
+]
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12"]

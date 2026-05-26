@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Kanban Board</title>
+    <link rel="stylesheet" href="/ui/static/todo.css" />
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="/ui/static/theme.js" defer></script>
+</head>
+<body>
+<main class="container">
+    <header class="page-header">
+        <h1>Todo Kanban Board</h1>
+        <button id="theme-toggle" type="button" class="theme-toggle" aria-label="Toggle color theme">
+            Toggle theme
+        </button>
+    </header>
+
+    <section class="panel health-panel">
+        <h2>API Health Status</h2>
+        <div
+            id="health-status"
+            hx-get="/ui/health"
+            hx-trigger="load, every 10s"
+            hx-swap="innerHTML"
+        >
+            Loading health status...
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Create Card</h2>
+        <form
+            class="todo-form"
+            hx-post="/ui/create"
+            hx-target="#todo-list"
+            hx-swap="innerHTML"
+        >
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" required />
+
+            <label for="description">Description</label>
+            <input id="description" name="description" type="text" />
+
+            <button type="submit">Add Card</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Kanban Board</h2>
+        <div id="todo-list">
+            {% include "partials/todo_list.html" %}
+        </div>
+    </section>
+</main>
+</body>
+</html>

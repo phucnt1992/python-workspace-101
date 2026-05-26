@@ -1,0 +1,18 @@
+<div class="health-grid">
+    <p>
+        <strong>Liveness:</strong>
+        {% if liveness_ok %}
+        <span class="health-ok">OK</span>
+        {% else %}
+        <span class="health-fail">ERROR</span>
+        {% endif %}
+    </p>
+    <p>
+        <strong>Readiness:</strong>
+        {% if readiness_ok %}
+        <span class="health-ok">OK</span>
+        {% else %}
+        <span class="health-fail">ERROR</span>
+        {% endif %}
+    </p>
+</div>
