@@ -2,6 +2,8 @@ import importlib.util
 from pathlib import Path
 
 import pytest
+from infra.db import reset_engine
+from infra.settings import get_settings
 from typer.testing import CliRunner
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -25,6 +27,13 @@ runner = CliRunner()
 @pytest.fixture(autouse=True)
 def _prepare_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
+    db_file = tmp_path / "todos.db"
+    monkeypatch.setenv("APP_DB_URL", f"sqlite+aiosqlite:///{db_file}")
+    get_settings.cache_clear()
+    reset_engine()
+    yield
+    get_settings.cache_clear()
+    reset_engine()
 
 
 def test_create_then_list_todos() -> None:

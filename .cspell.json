@@ -2,11 +2,13 @@
     "words": [
         "autouse",
         "charliermarsh",
+        "chromedriver",
         "debugpy",
         "direnv",
         "fastapi",
         "hbenl",
         "healthz",
+        "HTMX",
         "ipynb",
         "isort",
         "pycache",
@@ -18,6 +20,7 @@
         "sqlmodel",
         "tamasfe",
         "Taskfile",
+        "uvicorn",
         "venv"
     ],
     "ignorePaths": [

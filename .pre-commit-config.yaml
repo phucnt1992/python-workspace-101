@@ -13,11 +13,12 @@ repos:
         exclude: ^\.[^/]+/.*\.json$
       - id: check-toml
       - id: check-added-large-files
+        exclude: ^\.modules(/|$)
+      - id: name-tests-test
       ## Uncomment the following to prevent commits directly to main branch
       # - id: no-commit-to-branch
       #   args:
       #     - --branch=main
-      - id: name-tests-test
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.22.1
     hooks:

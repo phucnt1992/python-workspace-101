@@ -408,3 +408,6 @@ FodyWeavers.xsd
 
 # .db files are often used for SQLite databases, which can be generated during development and testing.
 *.db
+
+# Aspire
+.codegen-hash
