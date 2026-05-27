@@ -11,6 +11,7 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from sqlalchemy.sql import text
 
 from api.middleware import HtmxSpanMiddleware
+from api.todo.exception_handlers import register_todo_exception_handlers
 from api.todo.routers.todos import router as todos_router
 from api.ui.routers.todo_ui import router as todo_ui_router
 
@@ -39,6 +40,7 @@ app = FastAPI(
     docs_url="/docs",
 )
 FastAPIInstrumentor().instrument_app(app)
+register_todo_exception_handlers(app)
 app.add_middleware(HtmxSpanMiddleware)
 app.include_router(todos_router)
 app.include_router(todo_ui_router)
