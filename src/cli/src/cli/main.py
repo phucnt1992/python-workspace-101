@@ -10,11 +10,7 @@ from domain.todo import Todo
 from infra.db import get_session_context, init_db
 from use_cases.todo import (
     create_todo,
-    delete_todo,
-    get_todo_by_id,
     get_todo_list,
-    set_todo_completed,
-    update_todo,
 )
 
 # Import exp_app conditionally to support direct file loading in tests
