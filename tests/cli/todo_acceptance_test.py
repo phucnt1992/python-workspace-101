@@ -1,24 +1,10 @@
-import importlib.util
 from pathlib import Path
 
 import pytest
+from cli.main import app
 from infra.db import reset_engine
 from infra.settings import get_settings
 from typer.testing import CliRunner
-
-ROOT_DIR = Path(__file__).resolve().parents[2]
-CLI_MAIN_PATH = ROOT_DIR / "src" / "cli" / "main.py"
-
-spec = importlib.util.spec_from_file_location("todo_cli_main", CLI_MAIN_PATH)
-if spec is None or spec.loader is None:
-    raise RuntimeError(f"Cannot load CLI module from {CLI_MAIN_PATH}")
-
-# Import the CLI app from the main.py file
-cli_main = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(cli_main)
-
-# Now we can access the `app` object from the imported module
-app = cli_main.app
 
 runner = CliRunner()
 
