@@ -2,7 +2,6 @@ import asyncio
 import sys
 from pathlib import Path
 
-# Add src/cli/src to sys.path so imports work correctly
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import typer
@@ -16,7 +15,6 @@ from use_cases.todo import (
     update_todo,
 )
 
-# Import exp_app conditionally to support direct file loading in tests
 try:
     from cli.exp import app as exp_app
 except ModuleNotFoundError:
@@ -24,7 +22,6 @@ except ModuleNotFoundError:
 
 app = typer.Typer(help="Todo management CLI")
 todo_app = typer.Typer(help="Create and manage todo items")
-
 
 app.add_typer(todo_app, name="todo")
 if exp_app is not None:
@@ -81,7 +78,7 @@ def update(
 
     todo = asyncio.run(_update())
     if todo is None:
-        typer.echo(f"Todo {todo_id} not found.", err=True)
+        typer.echo(f"Todo with id={todo_id} was not found.")
         raise typer.Exit(1)
     typer.echo(f"Updated todo: {_format_todo(todo)}")
 
@@ -95,9 +92,9 @@ def delete(todo_id: int = typer.Argument(..., help="ID of the todo item to delet
 
     deleted = asyncio.run(_delete())
     if not deleted:
-        typer.echo(f"Todo {todo_id} not found.", err=True)
+        typer.echo(f"Todo with id={todo_id} was not found.")
         raise typer.Exit(1)
-    typer.echo(f"Deleted todo {todo_id}.")
+    typer.echo(f"Deleted todo with id={todo_id}.")
 
 
 @todo_app.command("complete")
@@ -109,7 +106,7 @@ def complete(todo_id: int = typer.Argument(..., help="ID of the todo item to mar
 
     todo = asyncio.run(_complete())
     if todo is None:
-        typer.echo(f"Todo {todo_id} not found.", err=True)
+        typer.echo(f"Todo with id={todo_id} was not found.")
         raise typer.Exit(1)
     typer.echo(f"Completed todo: {_format_todo(todo)}")
 
@@ -123,7 +120,7 @@ def reopen(todo_id: int = typer.Argument(..., help="ID of the todo item to reope
 
     todo = asyncio.run(_reopen())
     if todo is None:
-        typer.echo(f"Todo {todo_id} not found.", err=True)
+        typer.echo(f"Todo with id={todo_id} was not found.")
         raise typer.Exit(1)
     typer.echo(f"Reopened todo: {_format_todo(todo)}")
 
