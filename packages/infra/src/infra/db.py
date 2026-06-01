@@ -13,6 +13,13 @@ def get_engine():
     return create_async_engine(get_settings().db_url)
 
 
+def reset_engine() -> None:
+    # get_engine() creates a fresh engine on every call (no singleton), so clearing
+    # the settings cache is enough to force the next call to pick up a new DB URL.
+    # Used by tests that swap APP_DB_URL between fixtures.
+    get_settings.cache_clear()
+
+
 async def init_db() -> None:
     engine = get_engine()
     async with engine.begin() as connection:

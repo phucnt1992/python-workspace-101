@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest --tb=short)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "PowerShell(*)",
+      "PowerShell(Get-ChildItem -Recurse \"c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\" | Where-Object { $_.Extension -eq \".py\" } | Select-Object FullName)",
+      "PowerShell(cmd /c \"dir /s /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\")",
+      "PowerShell(cmd /c \"dir /s /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\tests\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\\\\src\")",
+      "PowerShell(python -c \"import py_compile, marshal, dis; import struct; f=open\\(r'c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\\\\src\\\\api\\\\__pycache__\\\\main.cpython-313.pyc','rb'\\); f.read\\(16\\); code=marshal.loads\\(f.read\\(\\)\\); import dis; dis.dis\\(code\\)\" 2>&1)",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\\\\src\\\\api\\\\__pycache__\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\\\\src\\\\api.egg-info\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\.venv\\\\Lib\\\\site-packages\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\src\\\\api\\\\src\\\\api\")",
+      "PowerShell(cmd /c \"dir /b c:\\\\Users\\\\nhatnguyena\\\\Documents\\\\Zenfolio\\\\python-workspace-101\\\\tests\")",
+      "Skill(superpowers:requesting-code-review)",
+      "Skill(superpowers:requesting-code-review:*)"
+    ]
+  }
+}

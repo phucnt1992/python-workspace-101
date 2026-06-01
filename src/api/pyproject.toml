@@ -1,0 +1,30 @@
+[project]
+name = "api"
+version = "1.0.0"
+description = "FastAPI application with SQLModel"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "jinja2",
+    "python-multipart",
+    "sqlmodel",
+    "pydantic",
+    "pydantic-settings",
+    "sqlalchemy",
+    "infra",
+    "use_cases",
+    "asyncpg",
+    "opentelemetry-instrumentation-fastapi",
+]
+
+[tool.uv.sources]
+infra = { workspace = true }
+use_cases = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/api"]

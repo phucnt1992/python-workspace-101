@@ -14,11 +14,11 @@ async def update_todo(
     title: str | None = None,
     description: str | None = None,
 ) -> Todo | None:
-    _logger.debug("Updating todo i", extra={"todo_id": todo_id, "title": title, "description": description})
+    _logger.debug("Updating todo", extra={"todo_id": todo_id, "title": title, "description": description})
 
     todo = await get_todo_by_id(db_session, todo_id)
     if todo is None:
-        _logger.warning(f"Todo with id={todo_id} not found.")
+        _logger.warning("Todo not found", extra={"todo_id": todo_id})
         return None
 
     if title is not None:
