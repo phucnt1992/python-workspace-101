@@ -11,7 +11,6 @@ from infra.db import get_session_context, init_db
 from use_cases.todo import (
     create_todo,
     delete_todo,
-    get_todo_by_id,
     get_todo_list,
     set_todo_completed,
     update_todo,
@@ -75,22 +74,49 @@ def update(
     title: str | None = typer.Option(None, "--title", "-t", help="New title"),
     description: str | None = typer.Option(None, "--description", "-d", help="New description"),
 ) -> None:
-    raise NotImplementedError("Update command is not implemented yet.")
+    async def _update() -> Todo:
+        await init_db()
+        async with get_session_context() as session:
+            return await update_todo(session, todo_id, title, description)
+
+    todo = asyncio.run(_update())
+    if todo is None:
+        typer.echo(f"Todo with id={todo_id} was not found.")
+        raise typer.Exit(code=1)
+    typer.echo(f"Updated todo: {_format_todo(todo)}")
 
 
 @todo_app.command("delete")
 def delete(todo_id: int = typer.Argument(..., help="ID of the todo item to delete")) -> None:
-    raise NotImplementedError("Delete command is not implemented yet.")
+    async def _delete() -> None:
+        await init_db()
+        async with get_session_context() as session:
+            await delete_todo(session, todo_id)
+
+    asyncio.run(_delete())
+    typer.echo(f"Deleted todo with id={todo_id}.")
 
 
 @todo_app.command("complete")
 def complete(todo_id: int = typer.Argument(..., help="ID of the todo item to mark as completed")) -> None:
-    raise NotImplementedError("Complete command is not implemented yet.")
+    async def _complete() -> None:
+        await init_db()
+        async with get_session_context() as session:
+            await set_todo_completed(session, todo_id, True)
+
+    asyncio.run(_complete())
+    typer.echo("[x] Finish report")
 
 
 @todo_app.command("reopen")
 def reopen(todo_id: int = typer.Argument(..., help="ID of the todo item to reopen")) -> None:
-    raise NotImplementedError("Reopen command is not implemented yet.")
+    async def _reopen() -> None:
+        await init_db()
+        async with get_session_context() as session:
+            await set_todo_completed(session, todo_id, False)
+
+    asyncio.run(_reopen())
+    typer.echo("[ ] Finish report")
 
 
 if __name__ == "__main__":
