@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import typer
 from domain.todo import Todo
-from infra.db import get_session_context, init_db
+from infra.db import get_session_context, init_db, dispose_engine
 from use_cases.todo import (
     create_todo,
     delete_todo,
@@ -132,4 +132,7 @@ def reopen(todo_id: int = typer.Argument(..., help="ID of the todo item to reope
 
 
 if __name__ == "__main__":
-    app()
+    try:
+        app()
+    finally:
+        asyncio.run(dispose_engine())
