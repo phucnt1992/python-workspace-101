@@ -1,4 +1,9 @@
 import asyncio
+import sys
+from pathlib import Path
+
+# Add src/cli/src to sys.path so imports work correctly
+sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import typer
 from domain.todo import Todo
@@ -6,19 +11,25 @@ from infra.db import get_session_context, init_db
 from use_cases.todo import (
     create_todo,
     delete_todo,
+    get_todo_by_id,
     get_todo_list,
     set_todo_completed,
     update_todo,
 )
 
-from cli.exp import app as exp_app
+# Import exp_app conditionally to support direct file loading in tests
+try:
+    from cli.exp import app as exp_app
+except ModuleNotFoundError:
+    exp_app = None
 
 app = typer.Typer(help="Todo management CLI")
 todo_app = typer.Typer(help="Create and manage todo items")
 
 
 app.add_typer(todo_app, name="todo")
-app.add_typer(exp_app, name="demo")
+if exp_app is not None:
+    app.add_typer(exp_app, name="demo")
 
 
 def _format_todo(todo: Todo) -> str:

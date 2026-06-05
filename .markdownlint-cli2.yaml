@@ -1,6 +1,7 @@
 ignores:
   - .git
   - .venv
+  - .github
   - __pycache__
   - node_modules
 config:

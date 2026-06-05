@@ -1,0 +1,165 @@
+:root {
+    color-scheme: light;
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #dbe2ea;
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --ok: #15803d;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: #334155;
+    --primary: #60a5fa;
+    --danger: #f87171;
+    --ok: #4ade80;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2rem 1rem 3rem;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.todo-form,
+.todo-edit-form {
+    display: grid;
+    gap: 0.5rem;
+}
+
+input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.65rem;
+    background: transparent;
+    color: var(--text);
+}
+
+button {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    border-radius: 8px;
+    padding: 0.45rem 0.8rem;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.theme-toggle {
+    white-space: nowrap;
+}
+
+.kanban-board {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.kanban-column {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: color-mix(in oklab, var(--surface) 92%, var(--bg));
+}
+
+.kanban-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.kanban-column-header h3 {
+    margin: 0;
+}
+
+.kanban-column-body {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.todo-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem;
+    display: grid;
+    gap: 0.7rem;
+}
+
+.inline-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge.completed {
+    color: var(--ok);
+    border: 1px solid var(--ok);
+}
+
+.badge.open {
+    color: var(--muted);
+    border: 1px solid var(--muted);
+}
+
+.health-ok {
+    color: var(--ok);
+}
+
+.health-fail {
+    color: var(--danger);
+}
+
+.empty-state {
+    color: var(--muted);
+}

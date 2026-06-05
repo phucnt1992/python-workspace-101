@@ -1,0 +1,113 @@
+{% set open_todos = todos | selectattr("completed", "equalto", false) | list %}
+{% set done_todos = todos | selectattr("completed", "equalto", true) | list %}
+<div class="kanban-board">
+    <section class="kanban-column">
+        <header class="kanban-column-header">
+            <h3>To Do</h3>
+            <span class="badge open">{{ open_todos | length }}</span>
+        </header>
+        <div class="kanban-column-body">
+            {% for todo in open_todos %}
+            <article class="todo-item" data-testid="todo-item">
+                <form
+                    class="inline-form todo-edit-form"
+                    hx-post="/ui/{{ todo.id }}/update"
+                    hx-target="#todo-list"
+                    hx-swap="innerHTML"
+                >
+                    <input
+                        type="text"
+                        name="title"
+                        value="{{ todo.title }}"
+                        required
+                        aria-label="Todo title"
+                    />
+                    <input
+                        type="text"
+                        name="description"
+                        value="{{ todo.description or '' }}"
+                        aria-label="Todo description"
+                    />
+                    <button type="submit">Save</button>
+                </form>
+                <div class="inline-actions">
+                    <button
+                        type="button"
+                        hx-post="/ui/{{ todo.id }}/complete"
+                        hx-target="#todo-list"
+                        hx-swap="innerHTML"
+                    >
+                        Complete
+                    </button>
+                    <button
+                        type="button"
+                        hx-post="/ui/{{ todo.id }}/delete"
+                        hx-target="#todo-list"
+                        hx-swap="innerHTML"
+                        class="danger"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </article>
+            {% else %}
+            <p class="empty-state">No cards in To Do.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="kanban-column">
+        <header class="kanban-column-header">
+            <h3>Done</h3>
+            <span class="badge completed">{{ done_todos | length }}</span>
+        </header>
+        <div class="kanban-column-body">
+            {% for todo in done_todos %}
+            <article class="todo-item" data-testid="todo-item">
+                <form
+                    class="inline-form todo-edit-form"
+                    hx-post="/ui/{{ todo.id }}/update"
+                    hx-target="#todo-list"
+                    hx-swap="innerHTML"
+                >
+                    <input
+                        type="text"
+                        name="title"
+                        value="{{ todo.title }}"
+                        required
+                        aria-label="Todo title"
+                    />
+                    <input
+                        type="text"
+                        name="description"
+                        value="{{ todo.description or '' }}"
+                        aria-label="Todo description"
+                    />
+                    <button type="submit">Save</button>
+                </form>
+                <div class="inline-actions">
+                    <button
+                        type="button"
+                        hx-post="/ui/{{ todo.id }}/reopen"
+                        hx-target="#todo-list"
+                        hx-swap="innerHTML"
+                    >
+                        Reopen
+                    </button>
+                    <button
+                        type="button"
+                        hx-post="/ui/{{ todo.id }}/delete"
+                        hx-target="#todo-list"
+                        hx-swap="innerHTML"
+                        class="danger"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </article>
+            {% else %}
+            <p class="empty-state">No cards in Done.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>

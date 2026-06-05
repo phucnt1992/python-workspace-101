@@ -14,9 +14,20 @@ jobs:
 
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          # Enable automatic GitHub Actions caching
+          enable-cache: true
+          # Optional: Use a specific dependency file to invalidate the cache
+          cache-dependency-glob: "uv.lock"
 
       - name: Set up Task
         uses: arduino/setup-task@v2
+
+      - name: Set up Browser
+        uses: browser-actions/setup-chrome@v2
+        with:
+          install-chromedriver: true
+          install-dependencies: true
 
       - name: Install dependencies
         run: task init

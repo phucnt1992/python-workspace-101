@@ -1,18 +1,32 @@
 import typer
+from rich.console import Console
 
 app = typer.Typer(name="exp", help="Experimental commands for testing and development.")
 
 
 @app.command("moo")
 def moo() -> None:
-    """Prints 'Hello, Moo!' to the console."""
-    typer.secho("Hello, Moo!", fg=typer.colors.GREEN)
+    """Prints a colorful cow to the console."""
+
+    console = Console()
+    cow = [
+        ("        (    )", "yellow"),
+        ("       (      )", "yellow"),
+        ("        (    )", "yellow"),
+        ("  ^__^         ", "white"),
+        ("  (oo)\\_______", "brown"),
+        ("  (__)\\       )\\/\\/", "brown"),
+        ("      ||----w |", "brown"),
+        ("      ||     ||", "red"),
+    ]
+    for line, color in cow:
+        console.print(f"[bold {color}]{line}[/bold {color}]")
+    console.print("[bold green]Hello, Moo![/bold green]")
 
 
 @app.command("table")
 def print_table() -> None:
     """Prints a simple table to the console."""
-    from rich.console import Console
     from rich.table import Table
 
     console = Console()

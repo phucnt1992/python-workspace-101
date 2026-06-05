@@ -15,6 +15,7 @@ tasks:
       - uv venv --python {{.PYTHON_VERSION}} --clear
       - uv sync --compile-bytecode
       - uv run pre-commit install
+      - uv run playwright install chromium
 
   lint:
     desc: "Run linters to check code quality."
@@ -26,15 +27,30 @@ tasks:
     cmds:
       - uv run ruff format {{.CLI_ARGS}}
 
+  test-cli:
+    desc: "Run CLI tests."
+    cmds:
+      - uv run pytest --cov=src tests/cli/
+
+  test-api:
+    desc: "Run API tests."
+    cmds:
+      - uv run pytest --cov=src tests/api/
+
   test:
     desc: "Run tests."
     cmds:
-      - uv run pytest --cov=src tests/
+      - uv run pytest --cov=src tests/api tests/cli tests/e2e/
+
+  test-e2e:
+    desc: "Run browser E2E tests for the HTMX Todo UI."
+    cmds:
+      - uv run pytest tests/e2e/ -v
 
   test-cov:
     desc: "Run tests and generate coverage report."
     cmds:
-      - uv run pytest --cov=src tests/
+      - uv run pytest --cov=src tests/api tests/cli
 
   ci:
     desc: "Run CI checks (lint and tests)."
@@ -52,14 +68,22 @@ tasks:
     cmds:
       - uv run pre-commit run --all-files
 
-  dashboard-token:
-    desc: "Generate a token for the Aspire dashboard."
+  aspire:
+    desc: "Run the Aspire resource service locally."
     cmds:
-      - loginLine=$(docker container logs aspire-dashboard | grep "login?t=")
-      - match=$(echo "$loginLine" | sed -n 's/.*login?t=\([^[:space:]]*\).*/\1/p')
-      - echo -n "$match"
+      - aspire run
 
   cli:
     desc: "Run the CLI application."
     cmds:
-      - uv python src/cli/src/cli/main.py {{.CLI_ARGS}}
+      - uv run src/cli/src/cli/main.py {{.CLI_ARGS}}
+
+  app:
+    desc: "Run the FastAPI application."
+    cmds:
+      - uv run uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  act:
+    desc: "Run the application using Act for local testing of GitHub Actions."
+    cmds:
+      - act -j ci --env-file .env

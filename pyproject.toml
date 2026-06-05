@@ -7,7 +7,7 @@ description = "A simple Python project to demonstrate workspace setup."
 readme = "README.md"
 requires-python = ">=3.13"
 
-dependencies = ["domain", "infra", "use_cases", "cli", "app"]
+dependencies = ["domain", "infra", "use_cases", "cli", "api"]
 
 [dependency-groups]
 dev = [
@@ -16,7 +16,14 @@ dev = [
     { include-group = "ci" },
 ]
 lint = ["ruff"]
-test = ["pytest", "pytest-cov"]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-playwright",
+    "playwright",
+    "testcontainers[postgresql]",
+    "httpx",
+]
 ci = ["pre-commit"]
 
 [tool.uv.sources]
@@ -26,15 +33,11 @@ infra = { workspace = true }
 use_cases = { workspace = true }
 
 # Define the source directories for each member
-# app = { workspace = true }
 cli = { workspace = true }
+api = { workspace = true }
 
 [tool.uv.workspace]
-members = [
-    "src/cli",
-    # "src/app",
-    "packages/*",
-]
+members = ["src/cli", "src/api", "packages/*"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
