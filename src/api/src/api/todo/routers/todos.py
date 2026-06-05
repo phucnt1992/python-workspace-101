@@ -40,29 +40,67 @@ async def list_todos(
 
 @router.get("/{todo_id}", response_model=TodoResponse)
 async def get_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Get single todo endpoint not implemented yet")
+    todo = await get_todo_by_id(db, todo_id)
+    if todo is None:
+        logger.warning("todo.not_found", extra={"todo_id": todo_id, "operation": "get", "source": "api"})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
+    return TodoResponse.model_validate(todo, from_attributes=True)
 
 
 @router.post("", response_model=TodoResponse, status_code=status.HTTP_201_CREATED)
 async def create_todo_endpoint(payload: TodoCreateRequest, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Create todo endpoint not implemented yet")
+    stripped_title = payload.title.strip()
+    if not stripped_title:
+        logger.warning("todo.create.invalid_title", extra={"source": "api"})
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Title is required")
+
+    todo = await create_todo(db, stripped_title, payload.description)
+    logger.info("todo.created", extra={"todo_id": todo.id, "todo_title": todo.title, "source": "api"})
+    return TodoResponse.model_validate(todo, from_attributes=True)
 
 
 @router.patch("/{todo_id}", response_model=TodoResponse)
 async def update_todo_endpoint(todo_id: int, payload: TodoUpdateRequest, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Update todo endpoint not implemented yet")
+    title = payload.title
+    if title is not None:
+        stripped_title = title.strip()
+        if not stripped_title:
+            logger.warning("todo.update.invalid_title", extra={"todo_id": todo_id, "source": "api"})
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Title is required")
+        title = stripped_title
+
+    todo = await update_todo(db, todo_id, title=title, description=payload.description)
+    if todo is None:
+        logger.warning("todo.not_found", extra={"todo_id": todo_id, "operation": "update", "source": "api"})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
+
+    logger.info("todo.updated", extra={"todo_id": todo.id, "todo_title": todo.title, "source": "api"})
+    return TodoResponse.model_validate(todo, from_attributes=True)
 
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo_endpoint(todo_id: int, db: DbSessionDep) -> None:
-    raise NotImplementedError("Delete todo endpoint not implemented yet")
+    deleted = await delete_todo(db, todo_id)
+    if not deleted:
+        logger.warning("todo.not_found", extra={"todo_id": todo_id, "operation": "delete", "source": "api"})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
 
 
 @router.post("/{todo_id}/complete", response_model=TodoResponse)
 async def complete_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Complete todo endpoint not implemented yet")
+    todo = await set_todo_completed(db, todo_id, True)
+    if todo is None:
+        logger.warning("todo.not_found", extra={"todo_id": todo_id, "operation": "complete", "source": "api"})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
+    logger.info("todo.completed", extra={"todo_id": todo.id, "source": "api"})
+    return TodoResponse.model_validate(todo, from_attributes=True)
 
 
 @router.post("/{todo_id}/reopen", response_model=TodoResponse)
 async def reopen_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Reopen todo endpoint not implemented yet")
+    todo = await set_todo_completed(db, todo_id, False)
+    if todo is None:
+        logger.warning("todo.not_found", extra={"todo_id": todo_id, "operation": "reopen", "source": "api"})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
+    logger.info("todo.reopened", extra={"todo_id": todo.id, "source": "api"})
+    return TodoResponse.model_validate(todo, from_attributes=True)
