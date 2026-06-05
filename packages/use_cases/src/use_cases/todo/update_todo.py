@@ -18,7 +18,7 @@ async def update_todo(
 
     todo = await get_todo_by_id(db_session, todo_id)
     if todo is None:
-        _logger.warning(f"Todo with id={todo_id} not found.")
+        _logger.warning(f"Todo with id={todo_id} was not found.")
         return None
 
     if title is not None:

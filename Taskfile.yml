@@ -9,7 +9,7 @@ tasks:
     cmd: task --list
 
   init:
-    desc: "Initialize the project by installing dependencies."
+    desc: "Initialize the project by installing dependencies inside the devcontainer."
     cmds:
       - uv python install {{.PYTHON_VERSION}} --compile-bytecode
       - uv venv --python {{.PYTHON_VERSION}} --clear
