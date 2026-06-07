@@ -41,7 +41,7 @@ def _format_todo(todo: Todo) -> str:
 
 def _logger_with_checking_todo_exist(
     result: Todo | bool | None,
-    todo_id: str,
+    todo_id: int,
     success_message: Optional[str] = None,
 ) -> None:
     if result:
@@ -54,15 +54,20 @@ def _logger_with_checking_todo_exist(
         sys.exit(1)
 
 
-@todo_app.command("list")
-def list_todos() -> None:
-    async def _list() -> list[Todo]:
+async def _call_function_by_name(function_name: str, **kwargs):
+    if function_name in globals() and callable(globals()[function_name]):
         await init_db()
         async with get_session_context() as session:
-            result = await get_todo_list(session)
-            return list(result)
+            result = await globals()[function_name](session, **kwargs)
+            return result
+    else:
+        typer.echo(f"Function {function_name} does not exist!")
+        sys.exit(1)
 
-    todos = asyncio.run(_list())
+
+@todo_app.command("list")
+def list_todos() -> None:
+    todos = asyncio.run(_call_function_by_name("get_todo_list"))
     if not todos:
         typer.echo("No todos found.")
         return
@@ -78,12 +83,8 @@ def create(
         None, "--description", "-d", help="Optional todo description"
     ),
 ) -> None:
-    async def _create() -> Todo:
-        await init_db()
-        async with get_session_context() as session:
-            return await create_todo(session, title, description)
-
-    todo = asyncio.run(_create())
+    kwargs = {"title": title, "description": description}
+    todo = asyncio.run(_call_function_by_name("create_todo", **kwargs))
     typer.echo(f"Created todo: {_format_todo(todo)}")
 
 
@@ -95,12 +96,8 @@ def update(
         None, "--description", "-d", help="New description"
     ),
 ) -> None:
-    async def _update() -> Todo:
-        await init_db()
-        async with get_session_context() as session:
-            return await update_todo(session, todo_id, title, description)
-
-    updated_todo = asyncio.run(_update())
+    kwargs = {"todo_id": todo_id, "title": title, "description": description}
+    updated_todo = asyncio.run(_call_function_by_name("update_todo", **kwargs))
     _logger_with_checking_todo_exist(updated_todo, todo_id, "Updated todo:")
 
 
@@ -108,12 +105,11 @@ def update(
 def delete(
     todo_id: int = typer.Argument(..., help="ID of the todo item to delete")
 ) -> None:
-    async def _delete() -> Todo:
-        await init_db()
-        async with get_session_context() as session:
-            return await delete_todo(session, todo_id)
+    kwargs = {
+        "todo_id": todo_id,
+    }
+    deleted_todo = asyncio.run(_call_function_by_name("delete_todo", **kwargs))
 
-    deleted_todo = asyncio.run(_delete())
     _logger_with_checking_todo_exist(
         deleted_todo, todo_id, f"Deleted todo with id={todo_id}."
     )
@@ -123,12 +119,8 @@ def delete(
 def complete(
     todo_id: int = typer.Argument(..., help="ID of the todo item to mark as completed")
 ) -> None:
-    async def _complete() -> Todo:
-        await init_db()
-        async with get_session_context() as session:
-            return await set_todo_completed(session, todo_id, True)
-
-    completed_todo = asyncio.run(_complete())
+    kwargs = {"todo_id": todo_id, "completed": True}
+    completed_todo = asyncio.run(_call_function_by_name("set_todo_completed", **kwargs))
     _logger_with_checking_todo_exist(completed_todo, todo_id)
 
 
@@ -136,12 +128,8 @@ def complete(
 def reopen(
     todo_id: int = typer.Argument(..., help="ID of the todo item to reopen")
 ) -> None:
-    async def _reopen() -> Todo:
-        await init_db()
-        async with get_session_context() as session:
-            return await set_todo_completed(session, todo_id, False)
-
-    reopened_todo = asyncio.run(_reopen())
+    kwargs = {"todo_id": todo_id, "completed": False}
+    reopened_todo = asyncio.run(_call_function_by_name("set_todo_completed", **kwargs))
     _logger_with_checking_todo_exist(reopened_todo, todo_id)
 
 
