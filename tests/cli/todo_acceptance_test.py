@@ -7,7 +7,7 @@ from infra.settings import get_settings
 from typer.testing import CliRunner
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-CLI_MAIN_PATH = ROOT_DIR / "src" / "cli" / "main.py"
+CLI_MAIN_PATH = ROOT_DIR / "src" / "cli" / "src" / "cli" / "main.py"
 
 spec = importlib.util.spec_from_file_location("todo_cli_main", CLI_MAIN_PATH)
 if spec is None or spec.loader is None:
