@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from infra.db import reset_engine
@@ -7,7 +8,7 @@ from infra.settings import get_settings
 from typer.testing import CliRunner
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-CLI_MAIN_PATH = ROOT_DIR / "src" / "cli" / "main.py"
+CLI_MAIN_PATH = ROOT_DIR / "src" / "cli" / "src" / "cli" / "main.py"
 
 spec = importlib.util.spec_from_file_location("todo_cli_main", CLI_MAIN_PATH)
 if spec is None or spec.loader is None:
@@ -25,7 +26,7 @@ runner = CliRunner()
 
 # Arrange for the test environment to be isolated and clean for each test case
 @pytest.fixture(autouse=True)
-def _prepare_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def _prepare_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
     monkeypatch.chdir(tmp_path)
     db_file = tmp_path / "todos.db"
     monkeypatch.setenv("APP_DB_URL", f"sqlite+aiosqlite:///{db_file}")
