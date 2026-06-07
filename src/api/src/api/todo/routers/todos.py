@@ -29,9 +29,14 @@ async def list_todos(
     start = (page - 1) * page_size
     end = start + page_size
     paged_todos = todos[start:end]
-    logger.debug("todo.list", extra={"page": page, "page_size": page_size, "total": total})
+    logger.debug(
+        "todo.list", extra={"page": page, "page_size": page_size, "total": total}
+    )
     return TodoListResponse(
-        items=[TodoResponse.model_validate(todo, from_attributes=True) for todo in paged_todos],
+        items=[
+            TodoResponse.model_validate(todo, from_attributes=True)
+            for todo in paged_todos
+        ],
         total=total,
         page=page,
         page_size=page_size,
@@ -40,29 +45,63 @@ async def list_todos(
 
 @router.get("/{todo_id}", response_model=TodoResponse)
 async def get_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Get single todo endpoint not implemented yet")
+    todo = await get_todo_by_id(db, todo_id)
+    if todo:
+        return TodoResponse.model_validate(todo, from_attributes=True)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Todo with id={todo_id} was not found.",
+    )
 
 
 @router.post("", response_model=TodoResponse, status_code=status.HTTP_201_CREATED)
-async def create_todo_endpoint(payload: TodoCreateRequest, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Create todo endpoint not implemented yet")
+async def create_todo_endpoint(
+    payload: TodoCreateRequest, db: DbSessionDep
+) -> TodoResponse:
+    created_todo = await create_todo(db, payload.title, payload.description)
+    return TodoResponse.model_validate(created_todo, from_attributes=True)
 
 
 @router.patch("/{todo_id}", response_model=TodoResponse)
-async def update_todo_endpoint(todo_id: int, payload: TodoUpdateRequest, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Update todo endpoint not implemented yet")
+async def update_todo_endpoint(
+    todo_id: int, payload: TodoUpdateRequest, db: DbSessionDep
+) -> TodoResponse:
+    updated_todo = await update_todo(db, todo_id, payload.title, payload.description)
+    if updated_todo:
+        return TodoResponse.model_validate(updated_todo, from_attributes=True)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Todo with id={todo_id} was not found.",
+    )
 
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo_endpoint(todo_id: int, db: DbSessionDep) -> None:
-    raise NotImplementedError("Delete todo endpoint not implemented yet")
+    deleted_todo = await delete_todo(db, todo_id)
+    if not deleted_todo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Todo with id={todo_id} was not found.",
+        )
 
 
 @router.post("/{todo_id}/complete", response_model=TodoResponse)
 async def complete_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Complete todo endpoint not implemented yet")
+    completed_todo = await set_todo_completed(db, todo_id, True)
+    if completed_todo:
+        return TodoResponse.model_validate(completed_todo, from_attributes=True)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Todo with id={todo_id} was not found.",
+    )
 
 
 @router.post("/{todo_id}/reopen", response_model=TodoResponse)
 async def reopen_todo(todo_id: int, db: DbSessionDep) -> TodoResponse:
-    raise NotImplementedError("Reopen todo endpoint not implemented yet")
+    reopened_todo = await set_todo_completed(db, todo_id, False)
+    if reopened_todo:
+        return TodoResponse.model_validate(reopened_todo, from_attributes=True)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Todo with id={todo_id} was not found.",
+    )
