@@ -17,7 +17,7 @@ class Settings(BaseSettings):
         # SQLAlchemy asyncpg driver requires the postgresql+asyncpg:// scheme.
         for plain in ("postgresql://", "postgres://"):
             if self.db_url.startswith(plain):
-                self.db_url = "postgresql+asyncpg://" + self.db_url[len(plain):]
+                self.db_url = "postgresql+asyncpg://" + self.db_url[len(plain) :]
                 break
         return self
 
