@@ -11,7 +11,6 @@ from infra.db import get_session_context, init_db
 from use_cases.todo import (
     create_todo,
     delete_todo,
-    get_todo_by_id,
     get_todo_list,
     set_todo_completed,
     update_todo,
@@ -75,22 +74,62 @@ def update(
     title: str | None = typer.Option(None, "--title", "-t", help="New title"),
     description: str | None = typer.Option(None, "--description", "-d", help="New description"),
 ) -> None:
-    raise NotImplementedError("Update command is not implemented yet.")
+    async def _update() -> Todo:
+        await init_db()
+        async with get_session_context() as session:
+            return await update_todo(session, todo_id, title=title, description=description)
+
+    try:
+        todo = asyncio.run(_update())
+        typer.echo(f"Updated todo: {_format_todo(todo)}")
+    except Exception as e:
+        typer.echo(f"Todo with id={todo_id} was not found. Error: {e}")
+        raise typer.Exit(code=1)
 
 
 @todo_app.command("delete")
 def delete(todo_id: int = typer.Argument(..., help="ID of the todo item to delete")) -> None:
-    raise NotImplementedError("Delete command is not implemented yet.")
+    async def _delete() -> None:
+        await init_db()
+        async with get_session_context() as session:
+            await delete_todo(session, todo_id)
+
+    try:
+        asyncio.run(_delete())
+        typer.echo(f"Deleted todo with id={todo_id}.")
+    except Exception as e:
+        typer.echo(f"Todo with id={todo_id} was not found. Error: {e}")
+        raise typer.Exit(code=1)
 
 
 @todo_app.command("complete")
 def complete(todo_id: int = typer.Argument(..., help="ID of the todo item to mark as completed")) -> None:
-    raise NotImplementedError("Complete command is not implemented yet.")
+    async def _complete() -> Todo:
+        await init_db()
+        async with get_session_context() as session:
+            return await set_todo_completed(session, todo_id, completed=True)
+
+    try:
+        todo = asyncio.run(_complete())
+        typer.echo(f"Completed todo: {_format_todo(todo)}")
+    except Exception as e:
+        typer.echo(f"Todo with id={todo_id} was not found. Error: {e}")
+        raise typer.Exit(code=1)
 
 
 @todo_app.command("reopen")
 def reopen(todo_id: int = typer.Argument(..., help="ID of the todo item to reopen")) -> None:
-    raise NotImplementedError("Reopen command is not implemented yet.")
+    async def _reopen() -> Todo:
+        await init_db()
+        async with get_session_context() as session:
+            return await set_todo_completed(session, todo_id, completed=False)
+
+    try:
+        todo = asyncio.run(_reopen())
+        typer.echo(f"Reopened todo: {_format_todo(todo)}")
+    except Exception as e:
+        typer.echo(f"Todo with id={todo_id} was not found. Error: {e}")
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
